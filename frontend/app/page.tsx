@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { RealAuth } from "./real-auth";
 
 type Project={id:number;date:string;title:string;description:string;image:string;assigned?:string};
 type Proposal={id:number;projectId:number;date:string;student:string;title:string;description:string};
@@ -25,7 +26,7 @@ export default function Home(){
  const assign=(p:Proposal)=>{setProjects(items=>items.map(x=>x.id===p.projectId?{...x,assigned:p.student}:x));setProposalId(p.id)};
  const enter=(r:"sme"|"student")=>{setRole(r);go(r==="sme"?"sme":"student")};
  const nav=<header className="top"><button className="brand" onClick={()=>go(role==="sme"?"sme":"student")}><span>SP</span><b>SME Projects</b></button><nav><button onClick={()=>go(role==="sme"?"sme":"student")}>My workspace</button>{role==="student"&&<button onClick={()=>go("search")}>Find projects</button>}<button className="avatar" onClick={()=>go("login")}>DL</button></nav></header>;
- if(["login","signup","verified","forgot","reset"].includes(view)) return <Auth view={view} go={go} enter={enter}/>;
+ if(["login","signup","verified","forgot","reset"].includes(view)) return <RealAuth view={view} go={go} enter={enter}/>;
  return <><div className="accent"/>{nav}<main className="shell">
   {view==="sme"&&<><Hero eyebrow="SME workspace" title="Turn business challenges into student-led progress." text="Share a real operational need, review thoughtful proposals and choose the right student team." action="Create a project" onAction={()=>{setProjectId(0);go("project")}}/><SectionTitle title="Your projects" text={`${projects.length} active briefs`}/><ProjectTable projects={projects} proposals={proposals} open={id=>{setProjectId(id);go("project")}}/></>}
   {view==="student"&&<><Hero eyebrow="Student workspace" title="Build experience that matters." text="Track your proposals and see where your ideas are making a difference." action="Explore projects" onAction={()=>go("search")}/><SectionTitle title="Your proposals" text="Submitted as Aisha Rahman"/><div className="table"><table><thead><tr><th>Date created</th><th>Project</th><th>Proposal</th><th>Status</th></tr></thead><tbody>{proposals.filter(p=>p.student==="Aisha Rahman").map(p=><tr key={p.id}><td>{p.date}</td><td>{projects.find(x=>x.id===p.projectId)?.title}</td><td><button className="link" onClick={()=>{setProjectId(p.projectId);setProposalId(p.id);go("submit")}}>{p.title}</button></td><td><Status yes={projects.find(x=>x.id===p.projectId)?.assigned===p.student}/></td></tr>)}</tbody></table></div></>}
