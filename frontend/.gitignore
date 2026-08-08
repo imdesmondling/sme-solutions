@@ -40,3 +40,8 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# local development process files
+.dev-process-id
+work-dev.log
+work-dev-error.log
